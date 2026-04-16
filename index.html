@@ -170,6 +170,7 @@
             color: #1e40af;
             margin-bottom: 1.5rem;
         }
+        /* 标题使用 span 实现换行，无 <br> */
         .hero-content h1 {
             font-size: 3.2rem;
             font-weight: 800;
@@ -180,6 +181,9 @@
             background-clip: text;
             -webkit-background-clip: text;
             color: transparent;
+        }
+        .hero-content h1 span {
+            display: block;
         }
         .hero-content p {
             font-size: 1.2rem;
@@ -553,7 +557,11 @@
         <div class="container hero-grid">
             <div class="hero-content">
                 <div class="hero-badge" data-i18n="hero_badge"><i class="fas fa-users"></i> Private E‑commerce 2.0 · Brand Owned Territory</div>
-                <h1 data-i18n="hero_title">Turn Users into Assets,<br>Make Repurchase Daily</h1>
+                <!-- 使用 span 实现换行，无 <br> 标签 -->
+                <h1 id="heroTitle">
+                    <span data-i18n="hero_line1">Turn Users into Assets,</span>
+                    <span data-i18n="hero_line2">Make Repurchase Daily</span>
+                </h1>
                 <p data-i18n="hero_desc">Say goodbye to traffic anxiety. Build a closed-loop private e‑commerce with communities, WeCom, SCRM and data insights – empower high-profit growth.</p>
                 <div class="hero-buttons">
                     <a href="#cta" class="btn-primary" data-i18n="hero_btn_primary">Get Free Plan <i class="fas fa-arrow-right"></i></a>
@@ -689,7 +697,8 @@
                     logo: "私域云<span>· 全域增长</span>",
                     nav_home: "首页", nav_features: "核心优势", nav_solutions: "解决方案", nav_cases: "成功案例", nav_cta: "立即体验",
                     hero_badge: "<i class='fas fa-users'></i> 私域电商 2.0 · 品牌自营新阵地",
-                    hero_title: "把用户沉淀为资产，<br>让复购成为日常",
+                    hero_line1: "把用户沉淀为资产，",
+                    hero_line2: "让复购成为日常",
                     hero_desc: "告别公域流量焦虑，打造品牌私域电商闭环 — 社群、企微、SCRM、数据洞察，一站式赋能高利润增长。",
                     hero_btn_primary: "免费获取方案 <i class='fas fa-arrow-right'></i>",
                     hero_btn_secondary: "<i class='fas fa-play'></i> 探索私域价值",
@@ -725,7 +734,8 @@
                     logo: "PrivySphere<span>· Omni Growth</span>",
                     nav_home: "Home", nav_features: "Core Benefits", nav_solutions: "Solutions", nav_cases: "Success", nav_cta: "Get Started",
                     hero_badge: "<i class='fas fa-users'></i> Private E‑commerce 2.0 · Brand Owned Territory",
-                    hero_title: "Turn Users into Assets,<br>Make Repurchase Daily",
+                    hero_line1: "Turn Users into Assets,",
+                    hero_line2: "Make Repurchase Daily",
                     hero_desc: "Say goodbye to traffic anxiety. Build a closed-loop private e‑commerce with communities, WeCom, SCRM and data insights – empower high-profit growth.",
                     hero_btn_primary: "Get Free Plan <i class='fas fa-arrow-right'></i>",
                     hero_btn_secondary: "<i class='fas fa-play'></i> Explore Value",
@@ -763,11 +773,12 @@
             const toggleBtn = document.getElementById('langToggleBtn');
 
             function updateLanguage(lang) {
+                // 更新普通 data-i18n 元素
                 const elements = document.querySelectorAll('[data-i18n]');
                 elements.forEach(el => {
                     const key = el.getAttribute('data-i18n');
                     if (translations[lang][key] !== undefined) {
-                        // 需要保留HTML的字段（包含图标的）
+                        // 需要保留HTML的字段
                         const keepHtmlKeys = ['logo', 'hero_badge', 'footer_logo', 'hero_btn_primary', 'hero_btn_secondary', 'cta_button'];
                         if (keepHtmlKeys.includes(key)) {
                             el.innerHTML = translations[lang][key];
@@ -776,7 +787,13 @@
                         }
                     }
                 });
-                // 处理 placeholder 属性
+                // 更新标题的两行（单独处理，因为它们是两个独立的 data-i18n）
+                const line1 = document.querySelector('[data-i18n="hero_line1"]');
+                const line2 = document.querySelector('[data-i18n="hero_line2"]');
+                if (line1 && translations[lang].hero_line1) line1.innerText = translations[lang].hero_line1;
+                if (line2 && translations[lang].hero_line2) line2.innerText = translations[lang].hero_line2;
+
+                // 处理 placeholder
                 const placeholders = document.querySelectorAll('[data-i18n-placeholder]');
                 placeholders.forEach(el => {
                     const key = el.getAttribute('data-i18n-placeholder');
@@ -801,7 +818,7 @@
             // 初始化英文界面
             updateLanguage('en');
 
-            // 平滑滚动与表单提交 (支持动态语言)
+            // 平滑滚动与表单提交
             const navLinks = document.querySelectorAll('.nav-links a[href^="#"]');
             navLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
